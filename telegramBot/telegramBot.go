@@ -91,6 +91,19 @@ func InitBot() error {
 					return err
 				}
 			}
+		case "/history":
+			data1, err := db.GetUsersvacancies(int(update.Message.Chat.ID))
+			if err != nil {
+				return err
+			}
+			for _, data := range data1 {
+				vacancy0 := fmt.Sprintf("Вакансия: %s, место работы: город-%s, зарплата %d, почта работодателя: %s:", data.Vacancy, data.City, data.Salary, data.Email)
+				msg2 := tgbotapi.NewMessage(update.Message.Chat.ID, vacancy0)
+				_, err = bot.Send(msg2)
+				if err != nil {
+					return err
+				}
+			}
 		default:
 			if Suffer.enum == 1 {
 				logic.AddText(update.Message.Text)
