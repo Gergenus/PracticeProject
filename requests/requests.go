@@ -17,8 +17,15 @@ type AddressSTR struct {
 }
 
 type ContactsSTR struct {
-	Email string `json:"email"`
-	Name  string `json:"name"`
+	Email  string      `json:"email"`
+	Name   string      `json:"name"`
+	Phones []PhoneData `json:"phones"`
+}
+
+type PhoneData struct {
+	Country string `json:"country"`
+	City    string `json:"city"`
+	Number  string `json:"number"`
 }
 
 type DepartmentSTR struct {

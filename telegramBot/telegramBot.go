@@ -1,6 +1,7 @@
 package telegrambot
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -79,7 +80,12 @@ func InitBot() error {
 				return err
 			}
 			for _, data := range ans.Items {
-				vacancy := fmt.Sprintf("Вакансия: %s, место работы: город-%s улица-%s строение-%s, зарплата %d, почта работодателя: %s, имя работодателя: %s", data.Name, data.Area.NameArea, data.Address.Street, data.Address.Street, data.Salary.From, data.Contacts.Email, data.Contacts.Name)
+				var cellnumber string
+				for _, tele := range data.Contacts.Phones {
+					cellnumber = tele.Country + tele.City + tele.Number
+				}
+
+				vacancy := fmt.Sprintf("Вакансия: %s, место работы: город-%s улица-%s строение-%s, зарплата %d, почта работодателя: %s, имя работодателя: %s, номер телефона: %s", data.Name, data.Area.NameArea, data.Address.Street, data.Address.Street, data.Salary.From, data.Contacts.Email, data.Contacts.Name, cellnumber)
 				msg2 := tgbotapi.NewMessage(update.Message.Chat.ID, vacancy)
 				_, err = bot.Send(msg2)
 				if err != nil {
@@ -90,6 +96,7 @@ func InitBot() error {
 				if err != nil {
 					return err
 				}
+				fmt.Println(logic.ReturnFinal())
 			}
 		case "/history":
 			data1, err := db.GetUsersvacancies(int(update.Message.Chat.ID))
@@ -114,7 +121,16 @@ func InitBot() error {
 				if err != nil {
 					return err
 				}
-				logic.Addpages(chr)
+				err = logic.Addpages(chr)
+				if err != nil {
+					if errors.Is(err, logic.TooManyPages) {
+						msg10 := tgbotapi.NewMessage(update.Message.Chat.ID, "Запрошено слишком много вакансий, попробуйте меньше")
+						_, err = bot.Send(msg10)
+						if err != nil {
+							return err
+						}
+					}
+				}
 				changeTo(&Suffer, 0)
 			}
 			if Suffer.enum == 3 {

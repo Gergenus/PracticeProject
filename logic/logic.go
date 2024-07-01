@@ -1,10 +1,14 @@
 package logic
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 )
 
+var (
+	TooManyPages = errors.New("Слишком большое количество вакансий")
+)
 var template string = "https://api.hh.ru/vacancies?"
 
 func AddText(text string) {
@@ -23,12 +27,25 @@ func ReturnFinal() string {
 	return template
 }
 
-func Addpages(pages int) {
+func Addpages(pages int) error {
+	if pages > 50 {
+		return TooManyPages
+	}
 	tmpl := template + "&per_page=" + strconv.Itoa(pages)
 	template = tmpl
+	return nil
 }
 
 func AddCity(city string) {
+	var ans []string
+	z := strings.Split(city, "")
+	for _, d := range z {
+		if d == " " {
+			continue
+		}
+		ans = append(ans, d)
+	}
+	city = strings.Join(ans, "")
 	template = template + city
 }
 
