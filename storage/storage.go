@@ -11,7 +11,7 @@ type DBsource struct {
 }
 
 func InitDB() (DBsource, error) {
-	db, err := sql.Open("pgx", "postgres://postgres:1234@localhost:5432/URLsucker")
+	db, err := sql.Open("pgx", "postgres://postgres:12345@telegram_db:5432/postgres?sslmode=disable")
 	if err != nil {
 		return DBsource{}, err
 	}

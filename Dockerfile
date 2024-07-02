@@ -1,5 +1,10 @@
 FROM golang:1.22
 
-COPY ./ ./
-RUN go build -o main .
-CMD ["./cmd/main"]
+WORKDIR /usr/local/src
+
+COPY . .
+RUN go mod download
+
+RUN go build cmd/main.go
+
+CMD ["./main"]

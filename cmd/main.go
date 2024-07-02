@@ -14,7 +14,6 @@ func main() {
 	}
 	err = telegrambot.InitBot()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal("Error initbot")
 	}
-
 }

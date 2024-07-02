@@ -1,0 +1,17 @@
+services:
+  telegram_db:
+    image: postgres
+    container_name: telegram_database
+    environment: 
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "12345"
+    ports: 
+      - 5436:5432
+  
+  app:
+    build: 
+      context: .
+    container_name: app
+    depends_on:
+      - telegram_db
